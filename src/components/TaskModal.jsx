@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { X } from "lucide-react";
 
-function TaskModal({ onClose, onAddTask, defaultStatus }) {
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("Medium");
-  const [dueDate, setDueDate] = useState("");
+function TaskModal({ onClose, onAddTask, onUpdateTask, defaultStatus, editingTask }) {
+  const [title, setTitle] = useState(editingTask?.title || "");
+  const [description, setDescription] = useState(editingTask?.description || "");
+  const [priority, setPriority] = useState(editingTask?.priority || "Medium");
+  const [dueDate, setDueDate] = useState(editingTask?.dueDate || "");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,112 +14,74 @@ function TaskModal({ onClose, onAddTask, defaultStatus }) {
       return;
     }
 
-    const newTask = {
-      id: Date.now(),
-      title: title.trim(),
-      description: description.trim(),
+    const taskData = {
+      id: editingTask ? editingTask.id : Date.now(),
+      title,
+      description,
       priority,
-      status: defaultStatus,
-      dueDate
+      dueDate,
+      status: editingTask ? editingTask.status : defaultStatus,
     };
 
-    onAddTask(newTask);
-
-    console.log("New task added:", newTask);
+    if (editingTask) {
+      onUpdateTask(taskData);
+      console.log("Task updated:", taskData);
+    } else {
+      onAddTask(taskData);
+      console.log("Task added:", taskData);
+    }
 
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl w-full max-w-md space-y-4">
+        <h2 className="text-xl font-bold">
+          {editingTask ? "Edit Task" : "Add New Task"}
+        </h2>
 
-      <div className="bg-white w-full max-w-md rounded-xl p-6">
+        <input
+          className="w-full border p-2 rounded"
+          placeholder="Task title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
-        <div className="flex justify-between items-center mb-5">
+        <textarea
+          className="w-full border p-2 rounded"
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
 
-          <h2 className="text-xl font-bold">
-            Add New Task
-          </h2>
+        <select
+          className="w-full border p-2 rounded"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+        >
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+        </select>
 
-          <button onClick={onClose}>
-            <X />
+        <input
+          type="date"
+          className="w-full border p-2 rounded"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
+
+        <div className="flex justify-end gap-2">
+          <button type="button" onClick={onClose} className="border px-4 py-2 rounded">
+            Cancel
           </button>
 
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+            {editingTask ? "Update Task" : "Add Task"}
+          </button>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-
-          <div>
-            <label className="block text-sm mb-1">Task Title</label>
-
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter task title"
-              className="w-full border rounded-lg p-3 outline-none focus:border-orange-400"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm mb-1">Description</label>
-
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter description"
-              className="w-full border rounded-lg p-3 outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm mb-1">Priority</label>
-
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              className="w-full border rounded-lg p-3"
-            >
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm mb-1">Due Date</label>
-
-            <input
-              type="date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              className="w-full border rounded-lg p-3"
-            />
-          </div>
-
-          <div className="flex gap-3 pt-2">
-
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 border rounded-lg py-3"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              className="flex-1 bg-orange-500 text-white rounded-lg py-3"
-            >
-              Add Task
-            </button>
-
-          </div>
-
-        </form>
-
-      </div>
-
+      </form>
     </div>
   );
 }

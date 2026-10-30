@@ -8,6 +8,10 @@ import TaskModal from "./components/TaskModal";
 
 
 function App() {
+  const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("todo");
+  const [editingTask, setEditingTask] = useState(null);
 
   const [tasks, setTasks] = useState(() => {
     const savedTasks = localStorage.getItem("tasks");
@@ -43,11 +47,6 @@ function App() {
       },
     ];
   });
-
-  const [showModal, setShowModal] = useState(false);
-  const [search, setSearch] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("todo");
-
   const columns = [
     {
       id: "todo",
@@ -90,6 +89,24 @@ function App() {
   const openTaskModal = (status = "todo") => {
     setSelectedStatus(status);
     setShowModal(true);
+  };
+
+  const updateTask = (updatedTask) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === updatedTask.id ? updatedTask : task
+      )
+    );
+  };
+
+  const openEditModal = (task) => {
+    setEditingTask(task);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingTask(null);
   };
 
   return (
@@ -164,6 +181,7 @@ function App() {
                 tasks={columnTasks}
                 onDelete={deleteTask}
                 onAddClick={openTaskModal}
+                onEdit={openEditModal}
               />
             );
           })}
@@ -176,9 +194,11 @@ function App() {
 
       {showModal && (
         <TaskModal
-          onClose={() => setShowModal(false)}
+          onClose={closeModal}
           onAddTask={addTask}
+          onUpdateTask={updateTask}
           defaultStatus={selectedStatus}
+          editingTask={editingTask}
         />
       )}
 
