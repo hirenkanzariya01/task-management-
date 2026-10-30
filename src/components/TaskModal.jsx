@@ -1,11 +1,13 @@
 import { useState } from "react";
 
-function TaskModal({ onClose, onAddTask, onUpdateTask, defaultStatus, editingTask }) {
+function TaskModal({ onClose, onAddTask, onUpdateTask, defaultStatus, editingTask, users }) {
   const [title, setTitle] = useState(editingTask?.title || "");
   const [description, setDescription] = useState(editingTask?.description || "");
   const [priority, setPriority] = useState(editingTask?.priority || "Medium");
   const [dueDate, setDueDate] = useState(editingTask?.dueDate || "");
-
+  const [assignedTo, setAssignedTo] = useState(
+    editingTask?.assignedTo || ""
+  );
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -20,9 +22,10 @@ function TaskModal({ onClose, onAddTask, onUpdateTask, defaultStatus, editingTas
       description,
       priority,
       dueDate,
+      assignedTo,
       status: editingTask ? editingTask.status : defaultStatus,
     };
-
+    
     if (editingTask) {
       onUpdateTask(taskData);
       console.log("Task updated:", taskData);
@@ -71,6 +74,20 @@ function TaskModal({ onClose, onAddTask, onUpdateTask, defaultStatus, editingTas
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
         />
+
+        <select
+          className="w-full border p-2 rounded"
+          value={assignedTo}
+          onChange={(e) => setAssignedTo(e.target.value)}
+        >
+          <option value="">Select Team Member</option>
+
+          {users.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.firstName} {user.lastName}
+            </option>
+          ))}
+        </select>
 
         <div className="flex justify-end gap-2">
           <button type="button" onClick={onClose} className="border px-4 py-2 rounded">

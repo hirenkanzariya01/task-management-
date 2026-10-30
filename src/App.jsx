@@ -4,14 +4,14 @@ import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import KanbanColumn from "./components/KanbanColumn";
 import TaskModal from "./components/TaskModal";
-
-
+import { getUsers } from "./services/userService";
 
 function App() {
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("todo");
   const [editingTask, setEditingTask] = useState(null);
+  const [users, setUsers] = useState([]);
 
   const [tasks, setTasks] = useState(() => {
     const savedTasks = localStorage.getItem("tasks");
@@ -109,6 +109,16 @@ function App() {
     setEditingTask(null);
   };
 
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      const userData = await getUsers();
+      setUsers(userData);
+    };
+
+    loadUsers();
+  }, []);
+
   return (
     <div className="min-h-screen flex bg-slate-50">
 
@@ -199,6 +209,7 @@ function App() {
           onUpdateTask={updateTask}
           defaultStatus={selectedStatus}
           editingTask={editingTask}
+          users={users}
         />
       )}
 
