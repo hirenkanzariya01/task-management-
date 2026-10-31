@@ -8,36 +8,12 @@ import KanbanColumn from "../components/KanbanColumn";
 import TaskModal from "../components/TaskModal";
 import { getUsers } from "../services/userService";
 
-const defaultTasks = [
-  {
-    id: 1,
-    title: "Design landing page",
-    description: "Create a clean landing page",
-    priority: "High",
-    status: "todo",
-    dueDate: "2026-11-02",
-  },
-  {
-    id: 2,
-    title: "API Integration",
-    description: "Connect backend API",
-    priority: "Medium",
-    status: "inprogress",
-    dueDate: "2026-11-05",
-  },
-  {
-    id: 3,
-    title: "Complete dashboard",
-    description: "Finish dashboard UI",
-    priority: "Low",
-    status: "done",
-    dueDate: "",
-  },
-];
-
 function BoardPage({ boards, setBoards }) {
   const { boardId } = useParams();
   const navigate = useNavigate();
+
+  console.log("BoardPage rendered");
+  console.log("Current Board ID:", boardId);
 
   const currentBoard = boards.find(
     (board) => String(board.id) === boardId
@@ -49,11 +25,13 @@ function BoardPage({ boards, setBoards }) {
   const [editingTask, setEditingTask] = useState(null);
   const [users, setUsers] = useState([]);
 
-  // Keep tasks separate for each board
-  const tasks =
-    currentBoard?.tasks ??
-    (boardId === "1" ? defaultTasks : []);
+  // Get tasks from selected board
+  const tasks = currentBoard?.tasks || [];
 
+  console.log("Current Board:", currentBoard?.title);
+  console.log("Total Tasks:", tasks.length);
+
+  // Default Kanban columns
   const columns = [
     {
       id: "todo",
@@ -72,21 +50,25 @@ function BoardPage({ boards, setBoards }) {
     },
   ];
 
-  // Update tasks only for the currently selected board
+  // Update tasks for selected board
   const updateBoardTasks = (callback) => {
+    console.log("Updating tasks for board:", boardId);
+
     setBoards((previousBoards) =>
       previousBoards.map((board) => {
         if (String(board.id) !== boardId) {
           return board;
         }
 
-        const currentTasks =
-          board.tasks ??
-          (boardId === "1" ? defaultTasks : []);
+        const currentTasks = board.tasks || [];
+        const updatedTasks = callback(currentTasks);
+
+        console.log("Previous Tasks:", currentTasks);
+        console.log("Updated Tasks:", updatedTasks);
 
         return {
           ...board,
-          tasks: callback(currentTasks),
+          tasks: updatedTasks,
         };
       })
     );
@@ -95,10 +77,15 @@ function BoardPage({ boards, setBoards }) {
   // Load team members from DummyJSON
   useEffect(() => {
     const loadUsers = async () => {
+      console.log("Fetching team members from DummyJSON...");
+
       try {
         const userData = await getUsers();
+
         setUsers(userData);
-        console.log("Team members loaded:", userData.length);
+
+        console.log("Team members loaded successfully:", userData.length);
+        console.table(userData);
       } catch (error) {
         console.error("Failed to load team members:", error);
       }
@@ -109,43 +96,54 @@ function BoardPage({ boards, setBoards }) {
 
   // Add task
   const addTask = (newTask) => {
+    console.log("Adding new task:", newTask);
+
     updateBoardTasks((previousTasks) => [
       ...previousTasks,
       newTask,
     ]);
 
-    console.log("Task added to board:", currentBoard.title);
+    console.log("Task added successfully!");
   };
 
   // Delete task
   const deleteTask = (id) => {
+    console.log("Deleting task:", id);
+
     updateBoardTasks((previousTasks) =>
       previousTasks.filter((task) => task.id !== id)
     );
 
-    console.log("Task deleted:", id);
+    console.log("Task deleted successfully:", id);
   };
 
   // Update task
   const updateTask = (updatedTask) => {
+    console.log("Updating task:", updatedTask);
+
     updateBoardTasks((previousTasks) =>
       previousTasks.map((task) =>
         task.id === updatedTask.id ? updatedTask : task
       )
     );
 
-    console.log("Task updated:", updatedTask.id);
+    console.log("Task updated successfully:", updatedTask.id);
   };
 
   // Open task modal
   const openTaskModal = (status = "todo") => {
+    console.log("Opening task modal...");
+    console.log("Selected column:", status);
+
     setSelectedStatus(status);
     setEditingTask(null);
     setShowModal(true);
   };
 
-  // Edit task
+  // Open edit modal
   const openEditModal = (task) => {
+    console.log("Opening edit modal for task:", task);
+
     setEditingTask(task);
     setSelectedStatus(task.status);
     setShowModal(true);
@@ -153,6 +151,8 @@ function BoardPage({ boards, setBoards }) {
 
   // Close modal
   const closeModal = () => {
+    console.log("Closing task modal");
+
     setShowModal(false);
     setEditingTask(null);
   };
@@ -161,7 +161,12 @@ function BoardPage({ boards, setBoards }) {
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
-    if (!over) return;
+    console.log("Drag ended:", event);
+
+    if (!over) {
+      console.log("Task was not dropped in a valid area");
+      return;
+    }
 
     const taskId = Number(
       String(active.id).replace("task-", "")
@@ -173,7 +178,13 @@ function BoardPage({ boards, setBoards }) {
       (column) => column.id === newStatus
     );
 
-    if (!columnExists) return;
+    if (!columnExists) {
+      console.warn("Invalid destination column:", newStatus);
+      return;
+    }
+
+    console.log("Moving task:", taskId);
+    console.log("New task status:", newStatus);
 
     updateBoardTasks((previousTasks) =>
       previousTasks.map((task) =>
@@ -183,10 +194,13 @@ function BoardPage({ boards, setBoards }) {
       )
     );
 
-    console.log("Task moved:", taskId, newStatus);
+    console.log("Task moved successfully!");
   };
 
+  // Board not found
   if (!currentBoard) {
+    console.error("Board not found:", boardId);
+
     return (
       <div className="text-center py-16">
         <h2 className="text-xl font-bold mb-3">
@@ -234,15 +248,16 @@ function BoardPage({ boards, setBoards }) {
         <input
           type="text"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            console.log("Searching tasks:", e.target.value);
+          }}
           placeholder="Search tasks..."
           className="w-full pl-10 p-3 rounded-lg border bg-white outline-none"
         />
       </div>
 
-      <DndContext
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {columns.map((column) => {
             const columnTasks = tasks.filter((task) => {
@@ -253,6 +268,11 @@ function BoardPage({ boards, setBoards }) {
                   .includes(search.toLowerCase())
               );
             });
+
+            console.log(
+              `${column.title} tasks:`,
+              columnTasks.length
+            );
 
             return (
               <KanbanColumn

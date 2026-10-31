@@ -84,7 +84,6 @@ function BoardsPage({ boards, setBoards }) {
   return (
     <div>
 
-      {/* Page Header */}
       <div className="flex justify-between items-center flex-wrap gap-4 mb-8">
 
         <div>
@@ -107,9 +106,6 @@ function BoardsPage({ boards, setBoards }) {
 
       </div>
 
-
-
-      {/* Board List */}
       {boards.length === 0 ? (
 
         <div className="bg-white border rounded-xl p-10 text-center">
@@ -191,7 +187,6 @@ function BoardsPage({ boards, setBoards }) {
         </div>
       )}
 
-      {/* Board Modal */}
       {showModal && (
         <BoardModal
           onClose={closeModal}

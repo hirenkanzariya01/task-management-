@@ -28,10 +28,10 @@ function TaskModal({ onClose, onAddTask, onUpdateTask, defaultStatus, editingTas
     
     if (editingTask) {
       onUpdateTask(taskData);
-      console.log("Task updated:", taskData);
+      console.log("Task updated-----", taskData);
     } else {
       onAddTask(taskData);
-      console.log("Task added:", taskData);
+      console.log("Task added-------", taskData);
     }
 
     onClose();

@@ -1,5 +1,5 @@
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link,  } from "react-router-dom";
 import {
   FolderKanban,
   ArrowRight,
@@ -14,10 +14,6 @@ function BoardCard({ board }) {
         <div className="bg-orange-100 p-3 rounded-lg">
           <FolderKanban size={25} className="text-orange-500" />
         </div>
-
-        <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">
-          Active
-        </span>
       </div>
 
       <h2 className="text-lg font-bold mt-5">
@@ -40,13 +36,13 @@ function BoardCard({ board }) {
 }
 
 function Dashboard({ boards }) {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const handleCreateBoard = () => {
-    console.log("Redirecting to board creation");
+  // const handleCreateBoard = () => {
+  //   console.log("Redirecting to board creation");
 
-    navigate("/boards");
-  };
+  //   navigate("/boards");
+  // };
 
   return (
     <div className="space-y-8">
@@ -64,16 +60,15 @@ function Dashboard({ boards }) {
           </p>
         </div>
 
-        <button
+        {/* <button
           onClick={handleCreateBoard}
           className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition"
         >
           <Plus size={18} />
           Create Board
-        </button>
+        </button> */}
       </div>
 
-      {/* Dashboard Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
         <div className="bg-white border rounded-xl p-5">
@@ -93,7 +88,7 @@ function Dashboard({ boards }) {
         </div>
       </div>
 
-      {/* My Boards */}
+   
       <section>
         <div className="flex justify-between items-center mb-5">
           <div>
