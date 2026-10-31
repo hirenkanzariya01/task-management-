@@ -107,10 +107,7 @@ function BoardsPage({ boards, setBoards }) {
 
       </div>
 
-      {/* Board Count */}
-      <p className="text-sm text-gray-500 mb-5">
-        Total Boards: {boards.length}
-      </p>
+
 
       {/* Board List */}
       {boards.length === 0 ? (
