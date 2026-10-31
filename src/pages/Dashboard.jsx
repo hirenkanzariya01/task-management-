@@ -53,7 +53,7 @@ function Dashboard({ boards }) {
       {/* Dashboard Header */}
       <div className="flex flex-wrap justify-between items-center gap-4">
         <div>
-       
+
 
           <h1 className="text-2xl font-bold text-gray-800">
             Welcome to TaskFlow!
@@ -75,18 +75,6 @@ function Dashboard({ boards }) {
 
       {/* Dashboard Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div className="bg-white border rounded-xl p-5">
-          <div className="flex items-center gap-3">
-            <FolderKanban className="text-orange-500" size={25} />
-
-            <div>
-              <p className="text-sm text-gray-500">Workspace</p>
-              <h3 className="font-semibold text-gray-800">
-                My Projects
-              </h3>
-            </div>
-          </div>
-        </div>
 
         <div className="bg-white border rounded-xl p-5">
           <div className="flex items-center gap-3">

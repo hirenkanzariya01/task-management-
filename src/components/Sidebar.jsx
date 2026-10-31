@@ -6,8 +6,7 @@ function Sidebar() {
     <aside className="w-64 bg-white border-r p-6 hidden md:block min-h-screen">
 
       <h1 className="text-2xl font-bold text-orange-500 mb-8">
-        TaskFlow.
-      </h1>
+Task Management      </h1>
 
       <nav className="space-y-2">
 

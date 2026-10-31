@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Plus, Search } from "lucide-react";
-import { DndContext, closestCorners } from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
 
 import KanbanColumn from "../components/KanbanColumn";
 import TaskModal from "../components/TaskModal";
@@ -186,7 +186,6 @@ function BoardPage({ boards, setBoards }) {
     console.log("Task moved:", taskId, newStatus);
   };
 
-  // Handle invalid board URL
   if (!currentBoard) {
     return (
       <div className="text-center py-16">
@@ -206,7 +205,6 @@ function BoardPage({ boards, setBoards }) {
 
   return (
     <div>
-      {/* Board Header */}
       <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
         <div>
           <h2 className="text-xl font-bold">
@@ -227,7 +225,6 @@ function BoardPage({ boards, setBoards }) {
         </button>
       </div>
 
-      {/* Search */}
       <div className="relative mb-7 max-w-sm">
         <Search
           className="absolute left-3 top-3 text-gray-400"
@@ -243,9 +240,7 @@ function BoardPage({ boards, setBoards }) {
         />
       </div>
 
-      {/* Kanban Board */}
       <DndContext
-        collisionDetection={closestCorners}
         onDragEnd={handleDragEnd}
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -274,7 +269,6 @@ function BoardPage({ boards, setBoards }) {
         </div>
       </DndContext>
 
-      {/* Task Modal */}
       {showModal && (
         <TaskModal
           onClose={closeModal}
