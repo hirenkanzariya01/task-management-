@@ -1,31 +1,46 @@
-import { LayoutDashboard, Settings, Users } from "lucide-react";
+import { LayoutDashboard, KanbanSquare } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 function Sidebar() {
   return (
-    <aside className="w-64 bg-white border-r p-6 hidden md:block">
+    <aside className="w-64 bg-white border-r p-6 hidden md:block min-h-screen">
 
-      <h1 className="text-2xl font-bold text-orange-500">
+      <h1 className="text-2xl font-bold text-orange-500 mb-8">
         TaskFlow.
       </h1>
 
-      <p className="text-xs text-gray-400 mt-10 mb-4">
-        WORKSPACE
-      </p>
+      <nav className="space-y-2">
 
-      <div className="flex items-center gap-3 bg-orange-50 text-orange-600 p-3 rounded-lg">
-        <LayoutDashboard size={20} />
-        My Boards
-      </div>
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) =>
+            `flex items-center gap-3 p-3 rounded-lg ${
+              isActive
+                ? "bg-orange-100 text-orange-600 font-semibold"
+                : "text-gray-600 hover:bg-gray-100"
+            }`
+          }
+        >
+          <LayoutDashboard size={20} />
+          Dashboard
+        </NavLink>
 
-      <div className="flex items-center gap-3 text-gray-500 p-3 mt-2">
-        <Users size={20} />
-        Team Members
-      </div>
+        <NavLink
+          to="/boards"
+          className={({ isActive }) =>
+            `flex items-center gap-3 p-3 rounded-lg ${
+              isActive
+                ? "bg-orange-100 text-orange-600 font-semibold"
+                : "text-gray-600 hover:bg-gray-100"
+            }`
+          }
+        >
+          <KanbanSquare size={20} />
+          My Boards
+        </NavLink>
 
-      <div className="flex items-center gap-3 text-gray-500 p-3">
-        <Settings size={20} />
-        Settings
-      </div>
+      </nav>
 
     </aside>
   );

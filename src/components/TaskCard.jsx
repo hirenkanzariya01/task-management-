@@ -1,13 +1,48 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, GripVertical } from "lucide-react";
+import { useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 
 function TaskCard({ task, onDelete, onEdit, users = [] }) {
   const assignedUser = users.find(
     (user) => user.id === Number(task.assignedTo)
   );
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    isDragging,
+  } = useDraggable({
+    id: `task-${task.id}`,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   return (
-    <div className="bg-white p-4 rounded-xl shadow-sm border mb-3">
-      <div className="flex justify-between">
-        <h3 className="font-semibold">{task.title}</h3>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="bg-white p-4 rounded-xl shadow-sm border mb-3"
+    >
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <button
+            ref={setActivatorNodeRef}
+            {...listeners}
+            {...attributes}
+            className="cursor-grab text-gray-400"
+            title="Drag task"
+          >
+            <GripVertical size={18} />
+          </button>
+
+          <h3 className="font-semibold">{task.title}</h3>
+        </div>
 
         <div className="flex gap-2">
           <button onClick={() => onEdit(task)}>
@@ -23,6 +58,7 @@ function TaskCard({ task, onDelete, onEdit, users = [] }) {
       <p className="text-sm text-gray-500 mt-2">
         {task.description}
       </p>
+
       {assignedUser && (
         <div className="flex items-center gap-2 mt-3">
           <img

@@ -14,17 +14,7 @@ function Navbar() {
         </h2>
       </div>
 
-      <div className="flex items-center gap-4">
-
-        <button className="p-2 bg-white border rounded-lg">
-          <Bell size={20} />
-        </button>
-
-        <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center">
-          <User size={20} />
-        </div>
-
-      </div>
+     
 
     </nav>
   );
