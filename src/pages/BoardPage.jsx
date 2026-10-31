@@ -24,7 +24,7 @@ function BoardPage({ boards, setBoards }) {
   const [selectedStatus, setSelectedStatus] = useState("todo");
   const [editingTask, setEditingTask] = useState(null);
   const [users, setUsers] = useState([]);
-
+  const [selectedPriority, setSelectedPriority] = useState("all");
   // Get tasks from selected board
   const tasks = currentBoard?.tasks || [];
 
@@ -239,33 +239,56 @@ function BoardPage({ boards, setBoards }) {
         </button>
       </div>
 
-      <div className="relative mb-7 max-w-sm">
-        <Search
-          className="absolute left-3 top-3 text-gray-400"
-          size={18}
-        />
+      <div className="flex flex-wrap gap-3 mb-7">
+        {/* Search Tasks */}
+        <div className="relative max-w-sm flex-1">
+          <Search
+            className="absolute left-3 top-3 text-gray-400"
+            size={18}
+          />
 
-        <input
-          type="text"
-          value={search}
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search tasks..."
+            className="w-full pl-10 p-3 rounded-lg border bg-white outline-none"
+          />
+        </div>
+
+        {/* Priority Filter */}
+        <select
+          value={selectedPriority}
           onChange={(e) => {
-            setSearch(e.target.value);
-            console.log("Searching tasks:", e.target.value);
+            setSelectedPriority(e.target.value);
+            console.log("Priority filter:", e.target.value);
           }}
-          placeholder="Search tasks..."
-          className="w-full pl-10 p-3 rounded-lg border bg-white outline-none"
-        />
+          className="p-3 rounded-lg border bg-white outline-none"
+        >
+          <option value="all">All Priorities</option>
+          <option value="High">High Priority</option>
+          <option value="Medium">Medium Priority</option>
+          <option value="Low">Low Priority</option>
+        </select>
       </div>
-
       <DndContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {columns.map((column) => {
             const columnTasks = tasks.filter((task) => {
+              const matchesStatus = task.status === column.id;
+
+              const matchesSearch = task.title
+                .toLowerCase()
+                .includes(search.toLowerCase());
+
+              const matchesPriority =
+                selectedPriority === "all" ||
+                task.priority === selectedPriority;
+
               return (
-                task.status === column.id &&
-                task.title
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
+                matchesStatus &&
+                matchesSearch &&
+                matchesPriority
               );
             });
 
